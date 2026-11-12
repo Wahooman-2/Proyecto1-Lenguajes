@@ -1,0 +1,49 @@
+cabal-version: 3.0
+name: proyecto1
+version: 0.1.0.0
+
+executable aventura
+    main-is: Main.hs
+    hs-source-dirs: app
+    other-modules: Motor.Tipos,
+                    Motor.Reconocedor,
+                    Motor.Mundo,
+                    Motor.Comandos,
+                    Motor.Nucleo,
+                    Motor.Persistencia
+    default-language: Haskell2010
+    build-depends: base >= 4.7 && < 5,
+                    containers,
+                    directory,
+                    filepath
+
+test-suite aventura-test
+    type: exitcode-stdio-1.0
+    main-is: Spec.hs
+    hs-source-dirs: test, app
+    other-modules: Motor.Tipos,
+                    Motor.Reconocedor,
+                    Motor.Mundo,
+                    Motor.Comandos,
+                    Motor.Nucleo,
+                    Motor.Persistencia
+    default-language: Haskell2010
+    build-depends: base >= 4.7 && < 5,
+                    containers,
+                    hspec
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
