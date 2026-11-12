@@ -230,3 +230,33 @@ unirConComas :: [String] -> String
 unirConComas []       = ""
 unirConComas [x]      = x
 unirConComas (x : xs) = x ++ ", " ++ unirConComas xs
+
+-- Manejador de comandos --
+data Comando
+  = Ir Direccion
+  | Tomar IdObjeto
+  | Soltar IdObjeto
+  | Examinar IdObjeto
+  | Inventario
+  | Guardar String
+  | Cargar String
+  | Ayuda
+  | Salir
+  deriving (Eq, Show)
+
+-- Manejador de transiciones de estado --
+data Fin
+  = Continuar
+  | Ganar
+  | FinTurnos
+  | Abandonar
+  deriving (Eq, Show)
+
+
+-- Estado de la partida --
+data Estado = Estado
+  { salaActual :: IdSala, 
+    inventario :: [IdObjeto],
+    objetosSala :: Map IdSala [IdObjeto],
+    turnosRestantes :: Int
+  } deriving (Eq, Show, Read)
