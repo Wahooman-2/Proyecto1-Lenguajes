@@ -1,4 +1,4 @@
--- Tipos del dominio del motor de aventuras.
+-- Tipos del dominio del motor de aventuras. --
 
 module Motor.Tipos
   ( -- Identificadores

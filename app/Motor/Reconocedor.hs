@@ -1,4 +1,4 @@
--- Combinadores de reconocimiento 
+-- Combinadores de reconocimiento --
 
 module Motor.Reconocedor
   ( -- Piezas básicas
