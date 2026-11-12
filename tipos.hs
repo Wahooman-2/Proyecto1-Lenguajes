@@ -234,6 +234,7 @@ unirConComas (x : xs) = x ++ ", " ++ unirConComas xs
 -- Manejador de comandos --
 data Comando
   = Ir Direccion
+  | Mirar
   | Tomar IdObjeto
   | Soltar IdObjeto
   | Examinar IdObjeto
