@@ -12,8 +12,8 @@ module Motor.Nucleo where
         Ayuda -> (["Puedes usar: ir <direccion>, mirar, tomar <objeto>, soltar <objeto>, examinar <objeto>, inventario, guardar <archivo>, cargar <archivo>, ayuda, salir"], estado)
 
         Inventario -> let inv = inventario estado
-                            msg = if null inv then "No llevas nada."
-                            else "" ++ intercalate ", " [o | IdObjeto o <- inv]
+                          msg = if null inv then "No llevas nada."
+                          else "" ++ intercalate ", " [o | IdObjeto o <- inv]
                         in ([msg], estado)
 
         Ir direccion ->
@@ -73,7 +73,7 @@ module Motor.Nucleo where
                         }
 
                     (IdObjeto nombreObj) = idObj
-                in (["Guardaste: " ++ nombreObj ++ " en tu inventario."], newEstado)
+                in (["Guardaste: " ++ nombreObj ++ " en tu inventario."], nuevoEstado)
 
         Soltar idObj ->
             let sala = salaActual estado
@@ -92,7 +92,7 @@ module Motor.Nucleo where
                         turnosRestantes = turnosRestantes estado - 1
                         }
                     (IdObjeto nombreObj) = idObj
-                in (["Soltaste: " ++ nombreObj ++ "."], nuevoEstado)
+                in (["Soltaste: " ++ nombreObj ++ "."], newEstado)
 
         Examinar idObj ->
             let sala = salaActual estado
