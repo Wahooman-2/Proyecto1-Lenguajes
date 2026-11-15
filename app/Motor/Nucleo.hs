@@ -6,8 +6,8 @@ module Motor.Nucleo where
     import Data.List (delete)
 
 -- Funcion general para ejecutar comandos --
-    ejecutar :: Mundo -> Comando -> Estado -> ([String], Estado)
-    ejecutar mundo comando estado = case comando of
+    ejecutar :: Comando -> Estado -> ([String], Estado)
+    ejecutar comando estado = case comando of
 
 -- Comando Salir --
         Salir -> (["Hasta pronto! Saliendo..."], estado)
@@ -25,6 +25,7 @@ module Motor.Nucleo where
         Ir direccion ->
             let idSalaAct = salaActual estado
                 inv = inventario estado
+                mundo = firmaMundo estado
 
             in case buscarSala idSalaAct mundo of
                 Nothing -> (["Error de codigo: Escapaste del mundo! Estas en una sala que no existe."], estado)
@@ -47,6 +48,7 @@ module Motor.Nucleo where
 -- Comando Mirar --
         Mirar ->
             let idSala = salaActual estado
+                mundo = firmaMundo estado
             in case buscarSala idSala mundo of
                 Nothing -> (["Error de codigo: Escapaste el mundo! Estas en una sala que no existe."], estado)
                 Just sala ->
@@ -108,6 +110,7 @@ module Motor.Nucleo where
             let sala = salaActual estado
                 inv = inventario estado
                 objsSala = Map.findWithDefault [] sala (objetosSala estado)
+                mundo = firmaMundo estado
             in if idObj `notElem` inv && idObj `notElem` objsSala then (["Ese objeto no esta tu alcance."], estado)
             else
                 case buscarObjeto idObj mundo of
@@ -135,6 +138,7 @@ module Motor.Nucleo where
 -- Funcion ue define el estado inicial de un partida --
     estadoInicial :: Mundo -> Estado
     estadoInicial mundo = Estado {
+        firmaMundo = mundo,
         salaActual = mundoInicio mundo,
         inventario = [],
         objetosSala = Map.map salaObjetos (mundoSalas mundo),

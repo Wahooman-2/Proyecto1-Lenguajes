@@ -80,12 +80,12 @@ esIdentificador txt = not (null txt) && null (filter (not . valido) txt)
 -- El mundo
 
 data Objeto = Objeto
-  { objetoId   :: IdObjeto, objetoDesc :: String } deriving (Eq, Show)
+  { objetoId   :: IdObjeto, objetoDesc :: String } deriving (Eq, Show, Read)
 
 -- Una salida de una sala. Si salidaRequiere es 'Just o', solo se puede
--- cruzar llevando el objeto @o@ en el inventario.
+-- cruzar llevando el objeto "o" en el inventario.
 data Salida = Salida
-  { salidaDestino  :: IdSala , salidaRequiere :: Maybe IdObjeto } deriving (Eq, Show)
+  { salidaDestino  :: IdSala , salidaRequiere :: Maybe IdObjeto } deriving (Eq, Show, Read)
 
 -- Una sala ya validada.
 
@@ -101,13 +101,13 @@ data Sala = Sala
   , salaDesc    :: String
   , salaSalidas :: Map Direccion Salida  
   , salaObjetos :: [IdObjeto]
-  } deriving (Eq, Show)
+  } deriving (Eq, Show, Read)
 
 -- La meta del mundo.
 data Meta
   = LlegarA IdSala             -- se cumple al entrar en la sala
   | LlevarA IdObjeto IdSala    -- se cumple al estar en la sala con el objeto
-  deriving (Eq, Show)
+  deriving (Eq, Show, Read)
 
 -- Un mundo completo. Solo lo produce leerMundo después de validar, así que
 -- los Maps no tienen ids duplicados y la sala inicial existe
@@ -118,7 +118,7 @@ data Mundo = Mundo
   , mundoTurnos  :: Int                   
   , mundoObjetos :: Map IdObjeto Objeto 
   , mundoSalas   :: Map IdSala Sala      
-  } deriving (Eq, Show)
+  } deriving (Eq, Show, Read)
 
 -- Busca una sala por su identificador
 buscarSala :: IdSala -> Mundo -> Maybe Sala
@@ -257,7 +257,8 @@ data Fin
 
 -- Estado de la partida --
 data Estado = Estado
-  { salaActual :: IdSala, 
+  { firmaMundo :: Mundo,
+    salaActual :: IdSala,
     inventario :: [IdObjeto],
     objetosSala :: Map IdSala [IdObjeto],
     turnosRestantes :: Int
