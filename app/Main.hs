@@ -7,6 +7,7 @@ import Motor.Tipos
 import Motor.Mundo (leerMundo)
 import Motor.Comandos (leerComando)
 import Motor.Nucleo (estadoInicial, ejecutar, evaluarEstado)
+import Motor.Persistencia
 
 -- Archivo que se encarga de la ejecucion del juego --
 
@@ -46,7 +47,7 @@ iniciarJuego archivo = do
         Right mundo -> do
             putStrLn("\n=== " ++ mundoTitulo mundo ++ " ===")
             let estadoBase = estadoInicial mundo
-                (mensajes, _) = ejecutar mundo Mirar estadoBase
+                (mensajes, _) = ejecutar Mirar estadoBase
             mapM_ putStrLn mensajes
             loopJuego mundo estadoBase
 
@@ -65,13 +66,23 @@ loopJuego mundo estado = do
                 loopJuego mundo estado
 
             Just comando -> do
-                let (mensajes, newEstado) = ejecutar mundo comando estado
+                let (mensajes, newEstado) = ejecutar comando estado
                 mapM_ putStrLn mensajes
                 case comando of
                     Salir -> exitSuccess
 
-                    Guardar _ -> loopJuego mundo newEstado
-                    Cargar _ -> loopJuego mundo newEstado
+                    Guardar archivo -> do
+                        guardarPartida archivo newEstado
+                        loopJuego mundo newEstado
+
+                    Cargar archivo -> do
+                        mEstado <- cargarPartida mundo archivo
+                        case mEstado of
+                            Nothing -> loopJuego mundo newEstado
+                            Just estadoCargado -> do
+                                let (mensajes, _) = ejecutar Mirar estadoCargado
+                                mapM_ putStrLn mensajes
+                                loopJuego mundo estadoCargado
 
                     _ -> case evaluarEstado mundo newEstado of
                             Ganar -> do

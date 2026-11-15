@@ -19,7 +19,11 @@ leerComando cmd =
             case direccionDeNombre txt of
                 Just d -> Just (Ir d)
                 Nothing -> Nothing
-        ["caminar", txt] -> -- Sinonmo --
+        ["caminar", txt] -> -- Sinonimo --
+            case direccionDeNombre txt of
+                Just d -> Just (Ir d)
+                Nothing -> Nothing
+        ["entrar", txt] -> -- Sinonimo --
             case direccionDeNombre txt of
                 Just d -> Just (Ir d)
                 Nothing -> Nothing
