@@ -5,26 +5,32 @@ module Motor.Nucleo where
     import qualified Data.Map as Map
     import Data.List (delete)
 
+-- Funcion general para ejecutar comandos --
     ejecutar :: Mundo -> Comando -> Estado -> ([String], Estado)
     ejecutar mundo comando estado = case comando of
 
+-- Comando Salir --
         Salir -> (["Hasta pronto! Saliendo..."], estado)
+
+-- Comando Ayuda --
         Ayuda -> (["Puedes usar: ir <direccion>, mirar, tomar <objeto>, soltar <objeto>, examinar <objeto>, inventario, guardar <archivo>, cargar <archivo>, ayuda, salir"], estado)
 
+-- Comando Inventario --
         Inventario -> let inv = inventario estado
                           msg = if null inv then "No llevas nada."
                           else "" ++ intercalate ", " [o | IdObjeto o <- inv]
                         in ([msg], estado)
 
+-- Comando Ir --
         Ir direccion ->
             let idSalaAct = salaActual estado
                 inv = inventario estado
 
             in case buscarSala idSalaAct mundo of
-                Nothing -> (["Error de codigo: Escapaste el mundo! Estas en una sala que no existe."], estado)
+                Nothing -> (["Error de codigo: Escapaste del mundo! Estas en una sala que no existe."], estado)
                 Just sala ->
                     case salidaEn direccion sala of
-                        Nothing -> (["No puedes ir hacia alla"], estado)
+                        Nothing -> (["No puedes ir hacia alla."], estado)
                         Just (Salida destino requisito) ->
                             case requisito of
                                 Just reqObj | reqObj `notElem` inv ->
@@ -38,6 +44,7 @@ module Motor.Nucleo where
                                         }
                                     in (["Te moviste hacia el " ++ nombreDireccion direccion ++ "."], estadoMovido)
 
+-- Comando Mirar --
         Mirar ->
             let idSala = salaActual estado
             in case buscarSala idSala mundo of
@@ -56,6 +63,7 @@ module Motor.Nucleo where
 
                     in ([desc, textObjs, textSalidas], newEstado)
 
+-- Comado Tomar --
         Tomar idObj ->
             let sala = salaActual estado
                 inv = inventario estado
@@ -73,8 +81,9 @@ module Motor.Nucleo where
                         }
 
                     (IdObjeto nombreObj) = idObj
-                in (["Guardaste: " ++ nombreObj ++ " en tu inventario."], nuevoEstado)
+                in (["Guardaste " ++ nombreObj ++ " en tu inventario."], nuevoEstado)
 
+-- Comando Soltar --
         Soltar idObj ->
             let sala = salaActual estado
                 inv = inventario estado
@@ -92,8 +101,9 @@ module Motor.Nucleo where
                         turnosRestantes = turnosRestantes estado - 1
                         }
                     (IdObjeto nombreObj) = idObj
-                in (["Soltaste: " ++ nombreObj ++ "."], newEstado)
+                in (["Soltaste " ++ nombreObj ++ "."], newEstado)
 
+-- Comando Examnar --
         Examinar idObj ->
             let sala = salaActual estado
                 inv = inventario estado
@@ -109,13 +119,20 @@ module Motor.Nucleo where
                             }
                         in ([desc], newEstado)
 
+-- Comando Guardar --
         Guardar file -> (["Guardando en " ++ file], estado)
 
+-- Comando Cargar --
         Cargar file -> (["Cargando desde " ++ file], estado)
 
+-- Comando Mimir (para saltar un turno, easter egg/debugging) --
+        Mimir ->
+            let mimiEstado = estado {
+                    turnosRestantes = turnosRestantes estado - 1
+                }
+            in (["Mimiste por un turno..."], mimiEstado)
 
-        _ -> (["No entendí eso, intenta de nuevo, recuerda usar ayuda para ver que puedes hacer"], estado)
-
+-- Funcion ue define el estado inicial de un partida --
     estadoInicial :: Mundo -> Estado
     estadoInicial mundo = Estado {
         salaActual = mundoInicio mundo,
@@ -124,12 +141,14 @@ module Motor.Nucleo where
         turnosRestantes = mundoTurnos mundo
         }
 
+-- Funcion que evalua transicione de estados --
     evaluarEstado :: Mundo -> Estado -> Fin
     evaluarEstado mundo estado
         | metaCumplida (mundoMeta mundo) estado = Ganar
         | turnosRestantes estado <= 0 = FinTurnos
         | otherwise = Continuar
 
+-- Funcion para verificar victoria --
     metaCumplida :: Meta -> Estado -> Bool
     metaCumplida (LlegarA salaDestino) estado = salaActual estado == salaDestino
     metaCumplida (LlevarA objRequerido salaDestino) estado = salaActual estado == salaDestino && objRequerido `elem` inventario estado

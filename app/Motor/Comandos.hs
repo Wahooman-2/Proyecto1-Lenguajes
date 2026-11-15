@@ -6,6 +6,7 @@ import Motor.Tipos
 filler :: [String]
 filler = ["el", "la", "los", "las", "un", "una", "unos", "unas", "al", "a"]
 
+-- funcion ue controla el flujo de funiones dependiendo del comando solicitado --
 leerComando :: String -> Maybe Comando
 leerComando cmd = 
     let 
@@ -18,11 +19,19 @@ leerComando cmd =
             case direccionDeNombre txt of
                 Just d -> Just (Ir d)
                 Nothing -> Nothing
+        ["caminar", txt] -> -- Sinonmo --
+            case direccionDeNombre txt of
+                Just d -> Just (Ir d)
+                Nothing -> Nothing
         
         ["mirar"] -> Just Mirar
         ["ver"] -> Just Mirar -- Sinonimo --
+        ["estado"] -> Just Mirar -- Sinonimo --
+
         ["ayuda"] -> Just Ayuda
+
         ["salir"] -> Just Salir
+
         ["inventario"] -> Just Inventario
         ["inv"] -> Just Inventario -- Sinonimo --
 
@@ -30,8 +39,10 @@ leerComando cmd =
         ["coger", txt] -> Just (Tomar (IdObjeto txt)) -- Sinonimo --
         ["agarrar", txt] -> Just (Tomar (IdObjeto txt)) -- Sinonimo --
         ["recoger", txt] -> Just (Tomar (IdObjeto txt)) -- Sinonimo --
+
         ["soltar", txt] -> Just (Soltar (IdObjeto txt))
         ["botar", txt] -> Just (Soltar (IdObjeto txt)) -- Sinonimo --
+
         ["examinar", txt] -> Just (Examinar (IdObjeto txt))
         ["revisar", txt] -> Just (Examinar (IdObjeto txt)) -- Sinonimo --
 
@@ -39,5 +50,7 @@ leerComando cmd =
         ["guardar"] -> Just (Guardar "guardado.txt") -- Default --
         ["cargar", txt] -> Just (Cargar txt)
         ["cargar"] -> Just (Cargar "guardado.txt") -- Default --
+
+        ["mimir"] -> Just Mimir
 
         _ -> Nothing
