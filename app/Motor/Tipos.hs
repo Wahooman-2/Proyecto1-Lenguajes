@@ -243,6 +243,7 @@ data Comando
   | Cargar String
   | Ayuda
   | Salir
+  | Mimir
   deriving (Eq, Show)
 
 -- Manejador de transiciones de estado --
