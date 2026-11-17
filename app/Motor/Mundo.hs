@@ -314,3 +314,109 @@ salidaDe n (d, t, req) = (errores, valor)
       Just dir | null errores ->
         Just (dir, Salida (IdSala t) (fmap IdObjeto req))
       _ -> Nothing
+
+-- Lee el texto completo del archivo de mundo: preprocesa, reconoce y valida.
+-- Es pura, es decir, si hay errores de sintaxis no se intenta validar lo demás
+leerMundo :: String -> Either [ErrorMundo] Mundo
+leerMundo texto = case reconocer (preprocesar texto) of
+  Left es -> Left es
+  Right (cab, objetos, salas) -> case validar cab objetos salas of
+    [] -> Right (construir cab objetos salas)
+    es -> Left es
+
+-- Revisa las reglas V2 a V10 sobre lo que se leyó y devuelve todos los errores
+-- juntos. Cada regla da un error por cada violación
+-- Para no llenar de errores en cadena: V7 y V10 solo miran objetos que sí
+-- están definidos (los que no, ya salen en V4, V6 o V8), y V9 solo se revisa si
+-- INICIO existe
+validar :: Cabecera -> [Objeto] -> [SalaCruda] -> [ErrorMundo]
+validar cab objetos salas =
+  juntar [v2, v3, v4, v5, v6, v7, v8, v9, v10]
+  where
+    idsSalas = map crudaId salas
+    idsObjetos = map objetoId objetos
+    colocaciones = [(o, crudaId s) | s <- salas, o <- crudaObjetos s]
+    colocados = map fst colocaciones
+
+    -- V2: ids repetidos
+    v2 = [SalaDuplicada s | s <- duplicados idsSalas] ++ [ObjetoDuplicado o | o <- duplicados idsObjetos]
+
+    -- V3: salida hacia una sala que no existe
+    v3 = [SalidaASalaInexistente (crudaId s) d dest | s <- salas, (d, Salida dest _) <- crudaSalidas s
+                                                                , not (dest `elem` idsSalas)]
+
+    -- V4: salida que requiere un objeto que no existe
+    v4 = [RequisitoInexistente (crudaId s) d o | s <- salas , (d, Salida _ (Just o)) <- crudaSalidas s
+                                                            , not (o `elem` idsObjetos)]
+
+    -- V5: dos salidas en la misma dirección
+    v5 = [DireccionRepetida (crudaId s) d | s <- salas, d <- duplicados (map fst (crudaSalidas s))]
+
+    -- V6: sala que contiene un objeto no definido
+    v6 = [ObjetoNoDefinidoEnSala (crudaId s) o | s <- salas, o <- unicos (crudaObjetos s)
+                                                           , not (o `elem` idsObjetos)]
+
+    -- V7: objeto colocado más de una vez
+    v7 = [ObjetoEnVariasSalas o [r | (o2, r) <- colocaciones, o2 == o]
+         | o <- duplicados colocados
+         , o `elem` idsObjetos]
+
+    -- V8: INICIO o META con una sala o un objeto que no existe
+    v8 = [InicioInexistente (cabInicio cab) | not (cabInicio cab `elem` idsSalas)]
+      ++ errMeta
+    errMeta = case cabMeta cab of
+      LlegarA s -> [MetaSalaInexistente s | not (s `elem` idsSalas)]
+      LlevarA o s -> [MetaObjetoInexistente o | not (o `elem` idsObjetos)]
+                  ++ [MetaSalaInexistente s | not (s `elem` idsSalas)]
+
+    -- V9: sala a la que no se llega desde INICIO (se ignoran los requisitos)
+    v9 = if cabInicio cab `elem` idsSalas
+           then [SalaInalcanzable r | r <- unicos idsSalas, not (r `elem` alcanzables salas (cabInicio cab))]
+           else []
+
+    -- V10: objeto que hace falta (para la meta o para cruzar una salida) pero
+    -- no está colocado en ninguna sala
+    necesarios = objetoDeMeta ++ [o | s <- salas, (_, Salida _ (Just o)) <- crudaSalidas s]
+    objetoDeMeta = case cabMeta cab of
+      LlevarA o _ -> [o]
+      LlegarA _ -> []
+    v10 = [ObjetoInconseguible o | o <- unicos necesarios, o `elem` idsObjetos, not (o `elem` colocados)]
+
+-- Las salas a las que se puede llegar desde una sala de origen siguiendo las
+-- salidas, sin mirar los requisitos. Va agregando las salas nuevas hasta que ya
+-- no aparece ninguna
+alcanzables :: [SalaCruda] -> IdSala -> [IdSala]
+alcanzables salas origen = explorar [origen] [origen]
+  where
+    explorar [] vistos = vistos
+    explorar (r : pendientes) vistos = explorar (pendientes ++ nuevas) (vistos ++ nuevas)
+      where
+        nuevas = unicos [d | d <- vecinas r, not (d `elem` vistos)]
+    vecinas r = [dest | s <- salas, crudaId s == r, (_, Salida dest _) <- crudaSalidas s]
+
+-- Cada elemento repetido, una sola vez
+duplicados :: Eq a => [a] -> [a]
+duplicados [] = []
+duplicados (x : xs)
+  | x `elem` xs = x : duplicados (filter (/= x) xs)
+  | otherwise = duplicados xs
+
+-- Los elementos sin repetir, en su orden de aparición
+unicos :: Eq a => [a] -> [a]
+unicos [] = []
+unicos (x : xs) = x : unicos (filter (/= x) xs)
+
+-- Arma el Mundo con lo ya validado. Aquí los ids no se repiten y no hay dos
+-- salidas en la misma dirección, así que los Map no pierden nada
+construir :: Cabecera -> [Objeto] -> [SalaCruda] -> Mundo
+construir cab objetos salas = Mundo
+  {mundoTitulo = cabTitulo cab
+  , mundoInicio = cabInicio cab
+  , mundoMeta = cabMeta cab
+  , mundoTurnos = cabTurnos cab
+  , mundoObjetos = Map.fromList [(objetoId o, o) | o <- objetos]
+  , mundoSalas = Map.fromList [(crudaId s, aSala s) | s <- salas]}
+  where
+    aSala s = Sala (crudaId s) (crudaDesc s) (Map.fromList (crudaSalidas s)) (crudaObjetos s)
+
+
