@@ -35,3 +35,8 @@ El apoyo de la IA se centró en aclarar dudas sobre características del lenguaj
 12. **Redacción del `README.md`:** Claude me ayudó a estructurar y redactar la documentación general del proyecto en el archivo `README.md`.
 13. **Redacción de `DECISIONES.md`:** Claude mejoró la redacción del archivo y lo pasó a formato .md
 14. **Redacción de `IA.md` (este documento):** Se utilizó Gemini para organizar, categorizar y redactar de forma clara los puntos de esta declaración a partir de los apuntes sobre el uso de las herramientas.
+
+## Ejemplos de sugerencias de Claude que se corrigieron o se rechazaron
+
+- Claude sugirió usar `Enum`, `Bounded` y `[minBound .. maxBound]`, y `esIdentificador` usaba `all`. Cristina optó por algo mas simple ya visto en clase por lo que se Se reemplazó por una lista escrita a mano y por `filter`, `null` y composición.
+- La primera versión de los comentarios usaba el formato de documentación de Haddock (`-- |`, `-- ^`) y líneas separadoras. Cristina optó por comentarios simples, y se reescribieron.
