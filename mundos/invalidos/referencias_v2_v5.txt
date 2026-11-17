@@ -1,0 +1,32 @@
+# Mundo inválido: ids repetidos y salidas rotas.
+# Errores esperados: 6
+#   V2: la sala b está definida dos veces
+#   V2: el objeto llave está definido dos veces
+#   V3: la sala a tiene una salida hacia c, que no existe
+#   V3: la sala a tiene una salida hacia d, que no existe
+#   V4: una salida de a requiere farol, que no existe
+#   V5: la sala a tiene dos salidas hacia el norte
+MUNDO: Mundo con referencias rotas
+INICIO: a
+META: llegar a b
+TURNOS: 10
+---
+OBJETO: llave
+DESC: Una llave.
+---
+OBJETO: llave
+DESC: Otra llave con el mismo identificador.
+---
+SALA: a
+DESC: Sala a.
+SALIDA: norte -> b
+SALIDA: norte -> c
+SALIDA: este -> d
+SALIDA: sur -> b requiere farol
+---
+SALA: b
+DESC: Sala b.
+SALIDA: sur -> a
+---
+SALA: b
+DESC: Otra sala b.

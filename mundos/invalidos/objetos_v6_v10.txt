@@ -1,0 +1,34 @@
+# Mundo inválido: objetos mal colocados, meta rota y una sala aislada.
+# Errores esperados: 5
+#   V6: la sala hall contiene fantasma, que no está definido
+#   V7: el objeto moneda está colocado en hall y en patio
+#   V8: la META menciona la sala torre, que no existe
+#   V9: la sala bodega no se alcanza desde INICIO
+#   V10: el objeto espada hace falta pero no está en ninguna sala
+MUNDO: Mundo con objetos perdidos
+INICIO: hall
+META: llevar espada a torre
+TURNOS: 12
+---
+OBJETO: moneda
+DESC: Una moneda.
+---
+OBJETO: espada
+DESC: Una espada.
+---
+OBJETO: escudo
+DESC: Un escudo.
+---
+SALA: hall
+DESC: El vestíbulo.
+SALIDA: norte -> patio
+OBJETO: moneda
+OBJETO: fantasma
+---
+SALA: patio
+DESC: Un patio.
+SALIDA: sur -> hall
+OBJETO: moneda
+---
+SALA: bodega
+DESC: Nadie llega hasta aquí.

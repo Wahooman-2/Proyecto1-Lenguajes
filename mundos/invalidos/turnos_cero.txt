@@ -1,0 +1,15 @@
+# Mundo inválido: TURNOS no es un número positivo (variante).
+# Errores esperados: 1
+#   TURNOS: 0
+MUNDO: Mundo sin tiempo
+INICIO: a
+META: llegar a b
+TURNOS: 0
+---
+SALA: a
+DESC: Sala a.
+SALIDA: norte -> b
+---
+SALA: b
+DESC: Sala b.
+SALIDA: sur -> a

@@ -1,0 +1,14 @@
+# Mundo inválido: falta el campo TURNOS en la cabecera (variante).
+# Errores esperados: 1
+#   falta TURNOS
+MUNDO: Mundo sin reloj
+INICIO: a
+META: llegar a b
+---
+SALA: a
+DESC: Sala a.
+SALIDA: norte -> b
+---
+SALA: b
+DESC: Sala b.
+SALIDA: sur -> a
