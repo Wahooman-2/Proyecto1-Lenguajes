@@ -12,6 +12,7 @@ module Motor.Mundo
 
 import Motor.Tipos
 import Motor.Reconocedor
+import qualified Data.Map as Map
 
 -- Una línea del archivo con su número original
 -- El número se pone antes de descartar nada, así los errores apuntan a la
