@@ -1,0 +1,18 @@
+# Mundo inválido: errores de sintaxis (V1) y de la variante TURNOS.
+# Errores esperados: 5
+#   línea 11: TURNOS no es un entero
+#   línea 15: clave desconocida COLOR
+#   línea 16: línea sin la forma CLAVE: valor
+#   línea 17: dirección inexistente
+#   línea 18: identificador inválido
+MUNDO: Mundo roto
+INICIO: sala1
+META: llegar a sala1
+TURNOS: muchos
+---
+SALA: sala1
+DESC: Una sala.
+COLOR: azul
+esto no es una línea válida
+SALIDA: diagonal -> sala2
+SALIDA: norte -> Sala_Mala
