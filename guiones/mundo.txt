@@ -1,0 +1,15 @@
+tomar carnet_tecnico
+ir este
+tomar linterna
+ir oeste
+ir norte
+ir oeste
+tomar llave_deposito
+ir este
+ir este
+ir norte
+tomar fusible_nuevo
+ir sur
+ir oeste
+ir norte
+ir abajo
