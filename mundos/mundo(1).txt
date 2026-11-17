@@ -1,0 +1,90 @@
+# Apagón en el edificio de laboratorios.
+# Se fue la luz y hay que cambiar el fusible del tablero eléctrico, que está en
+# el sótano. Para llegar hay que juntar tres cosas: un carnet para entrar a la
+# oficina técnica, la llave del depósito donde guardan el fusible y una linterna
+# para bajar al sótano.
+# La variante TURNOS importa: el límite obliga a ir directo, explorar todo el
+# edificio no alcanza.
+MUNDO: Apagón en el edificio de laboratorios
+INICIO: entrada
+META: llevar fusible_nuevo a sotano
+TURNOS: 16
+---
+OBJETO: carnet_tecnico
+DESC: Un carnet de técnico del edificio. Alguien lo dejó olvidado en la recepción.
+---
+OBJETO: linterna
+DESC: Una linterna de mano con pilas nuevas.
+---
+OBJETO: llave_deposito
+DESC: Una llave pequeña con una etiqueta que dice «depósito».
+---
+OBJETO: fusible_nuevo
+DESC: Un fusible de repuesto, todavía en su caja.
+---
+OBJETO: cafe
+DESC: Un vaso de café frío.
+---
+OBJETO: manual
+DESC: El manual de uso de los equipos del laboratorio. Nadie lo ha leído.
+---
+OBJETO: cable_viejo
+DESC: Un cable enredado que no sirve para nada.
+---
+OBJETO: disco_viejo
+DESC: Un disco duro viejo, sin etiqueta.
+---
+OBJETO: paraguas
+DESC: Un paraguas negro, olvidado en la azotea.
+---
+SALA: entrada
+DESC: El vestíbulo del edificio, a oscuras. Por la ventana entra la luz de un poste de la calle.
+SALIDA: norte -> pasillo
+SALIDA: este -> cafetin
+OBJETO: carnet_tecnico
+---
+SALA: cafetin
+DESC: El cafetín está cerrado y huele a café frío. Las sillas están sobre las mesas.
+SALIDA: oeste -> entrada
+OBJETO: linterna
+OBJETO: cafe
+---
+SALA: pasillo
+DESC: Un pasillo largo con puertas a cada lado. Las luces de emergencia están apagadas. La puerta del oeste tiene un lector de carnets.
+SALIDA: sur -> entrada
+SALIDA: este -> laboratorio
+SALIDA: norte -> sala_de_servidores
+SALIDA: arriba -> azotea
+SALIDA: oeste -> oficina_tecnica requiere carnet_tecnico
+---
+SALA: oficina_tecnica
+DESC: La oficina del personal técnico, con un tablero de llaves en la pared.
+SALIDA: este -> pasillo
+OBJETO: llave_deposito
+---
+SALA: laboratorio
+DESC: Mesas de trabajo con equipos apagados y papeles por todas partes. Al norte hay una puerta con candado.
+SALIDA: oeste -> pasillo
+SALIDA: norte -> deposito requiere llave_deposito
+OBJETO: manual
+OBJETO: cable_viejo
+---
+SALA: deposito
+DESC: Un depósito estrecho lleno de cajas. En un estante hay repuestos eléctricos.
+SALIDA: sur -> laboratorio
+OBJETO: fusible_nuevo
+---
+SALA: sala_de_servidores
+DESC: Filas de servidores apagados. Una escalera de metal baja a un sótano sin ventanas.
+SALIDA: sur -> pasillo
+SALIDA: abajo -> sotano requiere linterna
+OBJETO: disco_viejo
+---
+SALA: sotano
+DESC: El sótano está completamente a oscuras. Al fondo se ve el tablero eléctrico.
+SALIDA: arriba -> sala_de_servidores
+---
+SALA: azotea
+DESC: Desde la azotea se ve toda la ciudad sin luz. Sopla un viento frío.
+SALIDA: abajo -> pasillo
+OBJETO: paraguas
