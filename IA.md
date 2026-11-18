@@ -4,11 +4,7 @@
 
 Para el desarrollo de mi parte del proyecto utilicé dos herramientas de inteligencia artificial:
 * **Claude (Anthropic - modelo Claude Sonnet 5.5)** a través de su interfaz web (`claude.ai`), utilizada principalmente como herramienta de consulta técnica, resolución de bloqueos durante la implementación, depuración y apoyo en la generación de pruebas y borradores.
-* **Gemini (Google)**, utilizado específicamente para la revisión, estructuración y redacción final de este documento de declaración (`IA.md`).
-
-> **Nota:** Esta declaración cubre únicamente los módulos y tareas desarrolladas por **Cristina**. La parte correspondiente a **Brian** (`Comandos`, `Nucleo`, `Persistencia`, `Main` y sus respectivas pruebas) es declarada por él de forma independiente.
-
----
+* **Gemini (Google)**, utilizado para la revisión, estructuración y redacción final de este documento de declaración (`IA.md`) (Cristina), asi como para la sugerencia de ideas respecto a implementacion y correccion de logica del codigo (Brian).
 
 ## Desglose del uso de IA en el proyecto
 
@@ -38,5 +34,7 @@ El apoyo de la IA se centró en aclarar dudas sobre características del lenguaj
 
 ## Ejemplos de sugerencias de Claude que se corrigieron o se rechazaron
 
-- Claude sugirió usar `Enum`, `Bounded` y `[minBound .. maxBound]`, y `esIdentificador` usaba `all`. Cristina optó por algo mas simple ya visto en clase por lo que se Se reemplazó por una lista escrita a mano y por `filter`, `null` y composición.
-- La primera versión de los comentarios usaba el formato de documentación de Haddock (`-- |`, `-- ^`) y líneas separadoras. Cristina optó por comentarios simples, y se reescribieron.
+- Claude sugirió usar `Enum`, `Bounded` y `[minBound .. maxBound]`, y `esIdentificador` usaba `all`. Cristina optó por algo mas simple ya visto en clase por lo que se Se reemplazó por una lista escrita a mano y por `filter`, `null` y composición (Cristina).
+- La primera versión de los comentarios usaba el formato de documentación de Haddock (`-- |`, `-- ^`) y líneas separadoras. Cristina optó por comentarios simples, y se reescribieron (Cristina).
+- Varias veces Gemini me insistio ir redactando el document de decisiones con cada implementacion que se hacia, yo decidi terminar todo el codigo primero y despues redactar todos los txts (Brian).
+- Hubo un momento en el que estabamos discutiendo como decorar la interfaz para que muestre los turnos y cosas por el estilo, en algun momento surgio el tema de hacer que el `>` parpadee, se veia genial pero complicaba el codigo y era posible que interfiriera con las pruebas del profesor, entonces al final decidi no hacerlo (Brian).
