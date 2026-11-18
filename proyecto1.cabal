@@ -19,7 +19,7 @@ executable aventura
 
 test-suite aventura-test
     type: exitcode-stdio-1.0
-    main-is: Spec.hs
+    main-is: PruebasMundo.hs
     hs-source-dirs: test, app
     other-modules: Motor.Tipos,
                     Motor.Reconocedor,
@@ -30,7 +30,9 @@ test-suite aventura-test
     default-language: Haskell2010
     build-depends: base >= 4.7 && < 5,
                     containers,
-                    hspec
+                    hspec,
+                    directory,
+                    filepath
 
 
 

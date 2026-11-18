@@ -2,7 +2,8 @@
 -- Convierte el texto del archivo en bloques de líneas numeradas, listos para
 -- que el reconocedor los lea uno por uno
 module Motor.Mundo
-  ( Linea
+  ( leerMundo
+  , Linea
   , Bloque
   , preprocesar
   , numerar
