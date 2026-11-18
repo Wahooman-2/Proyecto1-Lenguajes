@@ -61,9 +61,7 @@ module Motor.Nucleo where
                         textObjs = if null objs then "No hay objetos interesantes"
                                     else "Encontraste los objetos: " ++ intercalate ", " [o | IdObjeto o <- objs]
 
-                        newEstado = estado { turnosRestantes = turnosRestantes estado - 1}
-
-                    in ([desc, textObjs, textSalidas], newEstado)
+                    in ([desc, textObjs, textSalidas], estado)
 
 -- Comado Tomar --
         Tomar idObj ->
@@ -117,10 +115,7 @@ module Motor.Nucleo where
                     Nothing -> (["Error de codigo: Conseguiste un objeto que no existe!"], estado)
                     Just objInfo ->
                         let desc = objetoDesc objInfo
-                            newEstado = estado {
-                                turnosRestantes = turnosRestantes estado - 1
-                            }
-                        in ([desc], newEstado)
+                        in ([desc], estado)
 
 -- Comando Guardar --
         Guardar file -> (["Guardando en " ++ file], estado)

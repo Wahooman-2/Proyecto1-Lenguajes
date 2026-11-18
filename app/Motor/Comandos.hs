@@ -6,7 +6,7 @@ import Motor.Tipos
 filler :: [String]
 filler = ["el", "la", "los", "las", "un", "una", "unos", "unas", "al", "a"]
 
--- funcion ue controla el flujo de funiones dependiendo del comando solicitado --
+-- funcion que controla el flujo de funiones dependiendo del comando solicitado --
 leerComando :: String -> Maybe Comando
 leerComando cmd = 
     let 
@@ -27,7 +27,7 @@ leerComando cmd =
             case direccionDeNombre txt of
                 Just d -> Just (Ir d)
                 Nothing -> Nothing
-        
+        [bruh] | Just d <- direccionDeNombre bruh -> Just (Ir d) -- requerimiento del profesor --
         ["mirar"] -> Just Mirar
         ["ver"] -> Just Mirar -- Sinonimo --
         ["estado"] -> Just Mirar -- Sinonimo --

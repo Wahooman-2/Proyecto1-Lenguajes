@@ -2,6 +2,7 @@
 MUNDO: Un mundo roto
 INICIO: vestibulo
 META: llevar gema a torre
+TURNOS: 1
 ---
 OBJETO: antorcha
 DESC: Una antorcha.
