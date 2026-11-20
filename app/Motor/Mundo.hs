@@ -122,19 +122,8 @@ reconocerBloque b@((n, t) : _) = case completo lineaClave t of
   Just ("SALA", _) -> fmap DeSala (reconocerSala b)
   Just (k, _) -> Left [BloqueDesconocido n k]
 
--- Cuando el mundo no trae TURNOS no hay límite de turnos. Se usa un número
--- tan grande que nunca se agota en una partida normal.
-turnosSinLimite :: Int
-turnosSinLimite = 1000000
-
--- Igual que unico, pero el campo puede faltar y eso no es un error
-unicoOpcional :: String -> [Campo] -> (Maybe (Int, String), [ErrorMundo])
-unicoOpcional clave cs = case [(n, v) | (n, k, v) <- cs, k == clave] of
-  [] -> (Nothing, [])
-  (x : xs) -> (Just x, [CampoRepetido n clave | (n, _) <- xs])
-
 -- La cabecera lleva MUNDO, INICIO y META, cada uno exactamente una vez.
--- TURNOS (variante 2) puede faltar: entonces no hay límite de turnos.
+-- TURNOS (variante 2) puede faltar: entonces no hay límite de turnos
 reconocerCabecera :: Bloque -> Either [ErrorMundo] Cabecera
 reconocerCabecera b = case (mTitulo, mInicio, mMeta, turnos) of
   (Just t, Just i, Just m, Just k) | null errores ->
@@ -157,7 +146,7 @@ reconocerCabecera b = case (mTitulo, mInicio, mMeta, turnos) of
     errores = malas
       ++ desconocidas ["MUNDO", "INICIO", "META", "TURNOS"] cs
       ++ juntar [e1, e2, e3, e4, e5, e6, e7, e8]
-
+      
 -- Un bloque OBJETO lleva OBJETO y DESC (cada uno exactamente una vez)
 reconocerObjeto :: Bloque -> Either [ErrorMundo] Objeto
 reconocerObjeto b = case (mId, mDesc) of
@@ -435,4 +424,13 @@ construir cab objetos salas = Mundo
   where
     aSala s = Sala (crudaId s) (crudaDesc s) (Map.fromList (crudaSalidas s)) (crudaObjetos s)
 
+-- Cuando el mundo no trae TURNOS no hay límite de turnos. Se usa un número
+-- tan grande que nunca se agota en una partida normal.
+turnosSinLimite :: Int
+turnosSinLimite = 1000000
 
+-- Igual que unico, pero el campo puede faltar y eso no es un error.
+unicoOpcional :: String -> [Campo] -> (Maybe (Int, String), [ErrorMundo])
+unicoOpcional clave cs = case [ (n, v) | (n, k, v) <- cs, k == clave ] of
+  [] -> (Nothing, [])
+  (x : xs) -> (Just x, [ CampoRepetido n clave | (n, _) <- xs ])
