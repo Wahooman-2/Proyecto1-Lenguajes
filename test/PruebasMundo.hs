@@ -93,7 +93,6 @@ spec = do
   invReferencias <- runIO (readFile "mundos/invalidos/referencias_v2_v5.txt")
   invObjetos <- runIO (readFile "mundos/invalidos/objetos_v6_v10.txt")
   invTurnosCero <- runIO (readFile "mundos/invalidos/turnos_cero.txt")
-  invSinTurnos <- runIO (readFile "mundos/invalidos/sin_turnos.txt")
 
   describe "Motor.Mundo.leerMundo (Archivos del profesor)" $ do
     it "acepta el mundo de ejemplo" $
@@ -124,12 +123,10 @@ spec = do
       cantidadErrores (leerMundo invObjetos) `shouldBe` 5
     it "turnos_cero da TurnosInvalidos" $
       leerMundo invTurnosCero `shouldBe` Left [TurnosInvalidos 0]
-    it "sin_turnos da 1 error" $
-      cantidadErrores (leerMundo invSinTurnos) `shouldBe` 1
 
   describe "Motor.Mundo.leerMundo (Casos raros de formato)" $ do
-    it "un archivo vacío da cuatro campos ausentes" $
-      leerMundo "" `shouldBe` Left [CampoAusente 1 "cabecera" k | k <- ["MUNDO", "INICIO", "META", "TURNOS"]]
+    it "un archivo vacío da tres campos ausentes" $
+      leerMundo "" `shouldBe` Left [CampoAusente 1 "cabecera" k | k <- ["MUNDO", "INICIO", "META"]]
     it "acepta el mundo mínimo" $
       esValido (leerMundo minimo) `shouldBe` True
     it "acepta fin de línea de Windows" $

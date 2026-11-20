@@ -4,7 +4,6 @@
 MUNDO: Entrega a última hora
 INICIO: estacionamiento
 META: llevar proyecto_impreso a oficina_del_profesor
-TURNOS: 100
 ---
 OBJETO: carnet
 DESC: Tu carnet estudiantil. La foto es de primer año y no te pareces.

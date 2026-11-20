@@ -2,7 +2,6 @@
 MUNDO: Mal escrito
 INICIO: cuarto
 META: llegar cuarto
-TURNOS: 1
 ---
 SALA: cuarto
 DESC: Un cuarto.

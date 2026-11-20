@@ -15,10 +15,10 @@ main :: IO ()
 main = do
     args <- getArgs
     case args of
-        ["-validar", archivo] -> validarMundo archivo
+        ["--validar", archivo] -> validarMundo archivo
         [archivo] -> iniciarJuego archivo
         _ -> do
-            putStrLn "Uso: aventura [-validar] <archivo_mundo>"
+            putStrLn "Uso: aventura [--validar] <archivo_mundo>"
             exitFailure
 
 
@@ -32,7 +32,7 @@ validarMundo archivo = do
             exitFailure
 
         Right _ -> do
-            putStrLn "Mundo valido."
+            putStrLn "Mundo válido."
             exitSuccess
 
 -- Funcion para iniciar el juego --
@@ -90,7 +90,7 @@ loopJuego mundo estado = do
                                 exitSuccess
 
                             FinTurnos -> do
-                                putStrLn "\n*** Se acabo el tiempo ***"
+                                putStrLn "\n*** Se acabó el tiempo ***"
                                 exitSuccess
 
                             Continuar ->
