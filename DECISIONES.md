@@ -84,6 +84,8 @@ Redactó: Cristina
 
 ## D5. Variante turnos
 
+Redactó: Brian
+
 **Contexto.** Nuestra version del motor de juegos requiere que tengamos una variable adicional `turnos` que defina un
 limite de acciones que el jugador puede realizar antes de que se acabe su tiempo y acitve el estado de perder. Hay muchas
 perspectivas con las que se puede implementar la funcionalidad de esta variable.
@@ -162,6 +164,46 @@ los mundos no coincidan, solo deben coincidir sus titulos. Esto lleva a la situa
 archivo que describe su mundo e igual cargar una partida de una version desactualizada. Considero que esto no es del todo malo,
 asi si un jugador esta haciendo playtesting y decide que quiere realizar un cambio pequeño en plena partida, no tiene que crear
 un guardado nuevo por cada cambio que haga (a no ser que el cambio sea al nombre del mundo).
+
+## D8. Cómo se lee la entrada y qué pasa al llegar al fin de la entrada
+
+Redactó: Cristina
+
+**Contexto.** El programa tiene que funcionar con la entrada redirigida desde un archivo (`aventura mundo.txt < guion.txt`) y terminar normalmente cuando la entrada se acaba, sin excepciones. En Haskell, `getLine` lanza una excepción de fin de archivo cuando ya no queda nada que leer. Además, la entrada estándar se puede leer de dos formas muy distintas, y una de ellas usa la evaluación perezosa, así que no era obvio cuál convenía.
+
+**Opciones.**
+1. `getContents` y procesar `lines` con una función que consume los comandos uno por uno. La lectura es perezosa: la lista de líneas se va construyendo a medida que llegan.
+2. `getLine` dentro de un bucle recursivo, con `isEOF` para saber si queda algo antes de leer.
+3. `getLine` y capturar la excepción de fin de archivo (no la vimos en clase, así que la descartamos).
+
+**Decisión.** La opción 2. En `app/Main.hs`, `loopJuego` imprime el indicador, hace `hFlush stdout`, llama a `isEOF` y solo si queda entrada llama a `getLine`. Si no queda, imprime "Fin de la entrada. Saliendo..." y vuelve normalmente, así que el programa termina con código 0.
+
+**Papel de la evaluación perezosa.**
+- `readFile` es perezoso, pero `leerMundo` necesita todo el texto para decidir si hay errores. Por eso el archivo del mundo se lee completo (y se cierra) antes de que empiece el juego.
+- Con `getContents` la entrada también sería perezosa y funcionaría de forma interactiva. Pero guardar y cargar partidas son acciones de IO en medio del bucle, y con lectura perezosa el orden entre leer, imprimir y escribir archivos depende de cuándo se fuerza cada parte. Con `getLine` e `isEOF` ese orden es explícito.
+
+**Consecuencias.**
+- Funciona igual con el teclado y con la entrada redirigida, y no lanza excepciones al llegar al fin.
+- El indicador se imprime también antes de detectar el fin, así que con entrada redirigida la salida termina con un indicador y el mensaje de fin en la misma línea. Es solo un detalle de presentación.
+- No tratamos el juego como una función pura de la lista de comandos. A cambio, el núcleo (`ejecutar`) sí es puro y se prueba aparte.
+- Lo haríamos distinto separando la parte que interpreta una línea de la que lee, y agregando una prueba automática del programa completo con la entrada redirigida.
+
+## D9. Si una salida bloqueada queda abierta para siempre después de cruzarla
+
+Redactó: Cristina
+
+**Contexto.** El enunciado define una salida bloqueada como la que declara `requiere <objeto>`: solo se puede cruzar si el jugador lleva ese objeto en el inventario. No dice qué pasa después de cruzarla: si queda abierta para siempre o si el requisito se vuelve a comprobar cada vez. Importa porque con `soltar` el jugador puede dejar el objeto en una sala y seguir caminando.
+
+**Opciones.**
+1. Comprobar el inventario cada vez que se intenta cruzar.
+2. Guardar en el `Estado` un conjunto de salidas abiertas (sala y dirección) y no volver a pedir el objeto cuando ya se abrió.
+
+**Decisión.** La opción 1. En `ejecutar` (`app/Motor/Nucleo.hs`), el caso `Ir` mira el campo requisito de la salida. Si hay un objeto requerido y no está en el inventario, responde "Necesitas ... para entrar aqui." y devuelve el mismo estado, así que el jugador no se mueve ni gasta turno. Si no hay requisito, o el objeto está en el inventario, lo mueve. No se guarda nada sobre las salidas que ya se cruzaron.
+
+**Consecuencias.**
+- El `Estado` no necesita un campo extra, así que guardar y cargar partidas no cambian. La regla es la misma del enunciado y se explica en una frase.
+- El jugador puede quedar atrapado si cruza con el objeto, lo suelta y la salida de regreso también lo pide. En `mundos/mundo.txt` las salidas de regreso no piden nada, así que no pasa.
+- Lo haríamos distinto con un conjunto de salidas abiertas en el `Estado` si quisiéramos puertas que se abren una sola vez, pero habría que guardarlo también en las partidas guardadas.
 
 ## D10. Cómo se preprocesa el archivo y qué casos raros se aceptan
 
