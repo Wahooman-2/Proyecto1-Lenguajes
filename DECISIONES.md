@@ -223,3 +223,44 @@ Redactó: Cristina
 - Un `---` de más al final o al principio no da error, pero tampoco se avisa de un separador duplicado por equivocación.
 - Una línea como `----` no es separador y da un error de forma.
 - Los errores apuntan a la línea real del archivo, aunque haya comentarios antes.
+  
+## D11. TURNOS opcional en la cabecera: sin TURNOS, turnos ilimitados
+
+Redactó: Cristina
+
+**Contexto:** Nuestra variante es la 2 (Turnos), que agrega `TURNOS: n` a
+la cabecera. La validación V1 pide reportar los campos obligatorios ausentes,
+así que había que decidir qué pasa cuando un mundo no declara `TURNOS`. No era
+obvio porque el enunciado no lo dice, y porque los mundos de prueba del
+profesor (el de ejemplo y los del drive) no tienen esa línea.
+
+**Opciones:**
+1. Tratar `TURNOS` como campo obligatorio: si falta, `leerMundo` devuelve un
+   error de V1 por campo ausente.
+2. Tratar `TURNOS` como opcional: si falta, el mundo se juega con turnos
+   ilimitados, es decir, sin la opción de límite.
+
+**Decisión:** Elegimos la opción 2. En `Motor.Tipos` los turnos se guardan
+como `Maybe Int`. Si el mundo no declara `TURNOS`, el valor es `Nothing`,
+`ejecutar` no gasta turnos y nunca se imprime `*** Se acabó el tiempo ***`.
+Si `TURNOS` aparece, debe ser un entero positivo: `TURNOS: 0` da
+`TurnosInvalidos`, y repetir la clave sigue siendo un error de V1.
+
+**Consecuencias:**
+- Ganamos versatilidad: el motor ejecuta tanto mundos con límite de turnos
+  como mundos sin él, y puede correr cualquier archivo válido del formato.
+- Ganamos que las pruebas del profesor, que no declaran `TURNOS`, se validan y
+  se juegan sin lanzar error, lo que permite verificar la correctitud del
+  programa con ellas.
+- Perdimos el aviso ante un olvido: si el autor de un mundo quería límite y
+  no escribió `TURNOS`, el motor no se lo advierte.
+- Como consecuencia en el código, un archivo vacío ahora da tres campos
+  ausentes (`MUNDO`, `INICIO`, `META`) y no cuatro. Eliminamos la prueba
+  `sin_turnos` y el mundo inválido `mundos/invalido/sin_turnos.txt`, y
+  ajustamos `test/PruebasMundo.hs`.
+- Qué haríamos distinto: emitir una advertencia, no un error,
+  cuando falte `TURNOS`.
+
+
+
+
